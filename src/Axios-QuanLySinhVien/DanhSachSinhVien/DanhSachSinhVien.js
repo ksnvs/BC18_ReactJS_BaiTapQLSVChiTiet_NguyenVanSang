@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import ItemSinhVien from "../ItemSinhVien/ItemSinhVien";
 
-class DasnhSachSinhVien extends Component {
+class DanhSachSinhVien extends Component {
   render() {
     let { dssv } = this.props;
     return (
@@ -35,4 +35,4 @@ let mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(DasnhSachSinhVien);
+export default connect(mapStateToProps)(DanhSachSinhVien);

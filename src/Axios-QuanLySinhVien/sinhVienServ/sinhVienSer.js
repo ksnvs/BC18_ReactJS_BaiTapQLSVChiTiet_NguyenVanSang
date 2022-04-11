@@ -1,6 +1,6 @@
 import axios from "axios";
+import { BASE_URL } from "../Redux/constant/quanLySvConstant";
 
-const BASE_URL = "https://620e4f3d585fbc3359dda8e8.mockapi.io/sv";
 export const sinhVienServ = {
   layDanhSinhVien: () => {
     return axios({

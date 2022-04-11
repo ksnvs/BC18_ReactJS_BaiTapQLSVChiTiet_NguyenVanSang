@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { ADD_SV, EDIT_SV, UPDATE_SV } from "../Redux/constant/quanLySvConstant";
+import {
+  off_loading_action,
+  on_loading_action,
+} from "../Redux/action/loadingAction";
+import {
+  ADD_SV,
+  EDIT_SV,
+  SET_DANH_SACH_SV,
+  UPDATE_SV,
+} from "../Redux/constant/quanLySvConstant";
+import { sinhVienServ } from "../sinhVienServ/sinhVienSer";
 
 class ModalSinhVien extends Component {
   state = {
@@ -12,6 +22,51 @@ class ModalSinhVien extends Component {
     },
   };
 
+  addSV = (sv) => {
+    this.props.onLoading();
+    sinhVienServ
+      .themSinhVien(sv)
+      .then((res) => {
+        sinhVienServ
+          .layDanhSinhVien()
+          .then((res) => {
+            this.props.setDssv(res.data);
+            alert("Thêm Sinh viên thành công !");
+            this.props.offLoading();
+          })
+          .catch((err) => {
+            alert("Load Sinh viên thất bại ! - ", err);
+            this.props.offLoading();
+          });
+      })
+      .catch((err) => {
+        alert("Thêm Sinh viên thất bại ! - ", err);
+        this.props.offLoading();
+      });
+  };
+
+  updateSV = (sv) => {
+    this.props.onLoading();
+    sinhVienServ
+      .capNhatSinhVien(sv.id, sv)
+      .then((res) => {
+        sinhVienServ
+          .layDanhSinhVien()
+          .then((res) => {
+            this.props.setDssv(res.data);
+            alert("Cập nhật Sinh viên thành công !");
+            this.props.offLoading();
+          })
+          .catch((err) => {
+            alert("Load Sinh viên thất bại ! - ", err);
+            this.props.offLoading();
+          });
+      })
+      .catch((err) => {
+        alert("Cập nhật Sinh viên thất bại ! - ", err);
+        this.props.offLoading();
+      });
+  };
   handleOnChangeEvent = (e) => {
     this.setState({
       sinhVien: { ...this.state.sinhVien, [e.target.name]: e.target.value },
@@ -149,7 +204,7 @@ class ModalSinhVien extends Component {
                       className="btn btn-danger"
                       data-dismiss="modal"
                       onClick={() => {
-                        this.props.updateSV(this.state.sinhVien);
+                        this.updateSV(this.state.sinhVien);
                       }}
                     >
                       Lưu
@@ -160,7 +215,7 @@ class ModalSinhVien extends Component {
                       className="btn btn-danger"
                       data-dismiss="modal"
                       onClick={() => {
-                        this.props.addSV(this.state.sinhVien);
+                        this.addSV(this.state.sinhVien);
                       }}
                     >
                       Thêm
@@ -186,6 +241,15 @@ let mapDispatchToProps = (dispatch) => {
     },
     updateSV: (sv) => {
       dispatch({ type: UPDATE_SV, payload: sv });
+    },
+    setDssv: (dssv) => {
+      dispatch({ type: SET_DANH_SACH_SV, payload: dssv });
+    },
+    onLoading: () => {
+      dispatch(on_loading_action());
+    },
+    offLoading: () => {
+      dispatch(off_loading_action());
     },
   };
 };
